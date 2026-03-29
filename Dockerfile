@@ -1,25 +1,25 @@
-# Use an official Python runtime as the base image
+# ===== BASE IMAGE =====
 FROM python:3.11-slim
 
-# Set the working directory in the container
+# ===== WORKDIR =====
 WORKDIR /app
 
-# install required packages for system
-RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y gcc default-libmysqlclient-dev pkg-config \
+# ===== SYSTEM DEPENDENCIES  =====
+RUN apt-get update && apt-get install -y \
+    gcc \
+    default-libmysqlclient-dev \
+    pkg-config \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file into the container
+# ===== COPY REQUIREMENTS =====
 COPY requirements.txt .
 
-# Install app dependencies
-RUN pip install mysqlclient
+# ===== INSTALL PYTHON DEPENDENCIES =====
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
+# ===== COPY APP =====
 COPY . .
 
-# Specify the command to run your application
+# ===== RUN APP (TEMP - DEV ONLY) =====
 CMD ["python", "app.py"]
-
