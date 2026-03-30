@@ -3,3 +3,4 @@ Flask-MySQLdb==0.2.0
 requests==2.26.0
 Werkzeug==2.2.2
 flask-limiter==3.5.0
+Flask-WTF==1.2.1
