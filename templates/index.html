@@ -18,6 +18,7 @@
     font-family:'Inter', sans-serif;
 }
 
+/* ===== BODY ===== */
 body {
     height:100vh;
     display:flex;
@@ -34,20 +35,28 @@ body {
     100%{background-position:0% 50%;}
 }
 
+/* ===== MAIN CONTAINER ===== */
 .container {
     width:100%;
     max-width:820px;
     height:620px;
     display:flex;
     flex-direction:column;
-    background: rgba(15,23,42,0.9);
-    backdrop-filter: blur(20px);
-    border-radius:22px;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(25px);
+    border-radius:24px;
     border:1px solid rgba(255,255,255,0.08);
-    box-shadow:0 30px 100px rgba(0,0,0,0.9);
+    box-shadow:0 40px 120px rgba(0,0,0,0.9);
     overflow:hidden;
+    transition: all 0.3s ease;
 }
 
+.container:hover {
+    transform: translateY(-3px);
+    box-shadow:0 50px 150px rgba(0,0,0,1);
+}
+
+/* ===== HEADER ===== */
 .header {
     padding:18px;
     display:flex;
@@ -57,6 +66,7 @@ body {
     color:#e2e8f0;
 }
 
+/* ===== STATUS ===== */
 #status {
     font-size:12px;
     position:relative;
@@ -76,7 +86,7 @@ body {
 
 @keyframes pulse {
     0%{box-shadow:0 0 0 0 currentColor;}
-    70%{box-shadow:0 0 0 8px transparent;}
+    70%{box-shadow:0 0 0 10px transparent;}
     100%{box-shadow:0 0 0 0 transparent;}
 }
 
@@ -85,6 +95,7 @@ body {
     color:#94a3b8;
 }
 
+/* ===== MESSAGES ===== */
 .messages {
     flex:1;
     overflow-y:auto;
@@ -96,8 +107,10 @@ body {
 }
 .messages::-webkit-scrollbar-thumb {
     background:#334155;
+    border-radius:10px;
 }
 
+/* ===== MESSAGE BUBBLES ===== */
 .msg {
     margin-bottom:14px;
     display:flex;
@@ -113,19 +126,28 @@ body {
 
 .bubble {
     padding:12px 16px;
-    border-radius:16px;
+    border-radius:18px;
     max-width:65%;
     font-size:14px;
+    transition: all 0.25s ease;
 }
 
+.bubble:hover {
+    transform: scale(1.02);
+}
+
+/* USER MESSAGE */
 .user .bubble {
     background:linear-gradient(135deg,#2563eb,#3b82f6);
     color:white;
+    box-shadow:0 10px 25px rgba(59,130,246,0.4);
 }
 
+/* SYSTEM MESSAGE */
 .system .bubble {
-    background:rgba(255,255,255,0.05);
+    background:rgba(255,255,255,0.06);
     color:#e2e8f0;
+    box-shadow:0 10px 20px rgba(0,0,0,0.4);
 }
 
 .time {
@@ -157,25 +179,49 @@ body {
     gap:10px;
 }
 
+/* ===== INPUT FIELD ===== */
 input {
     flex:1;
     padding:12px;
-    border-radius:12px;
+    border-radius:14px;
     border:1px solid #334155;
     background:#020617;
     color:white;
+    transition: all 0.25s ease;
 }
 
+input:focus {
+    outline:none;
+    border-color:#3b82f6;
+    box-shadow:0 0 12px rgba(59,130,246,0.5);
+}
+
+/* ===== BUTTON ===== */
 button {
     padding:12px 20px;
-    border-radius:12px;
+    border-radius:14px;
     border:none;
     background:linear-gradient(135deg,#2563eb,#3b82f6);
     color:white;
     cursor:pointer;
     position:relative;
+    font-weight:500;
+    transition: all 0.25s ease;
+    box-shadow:0 8px 20px rgba(37,99,235,0.4);
 }
 
+/* BUTTON HOVER */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow:0 12px 30px rgba(37,99,235,0.6);
+}
+
+/* BUTTON CLICK */
+button:active {
+    transform: scale(0.96);
+}
+
+/* LOADING */
 button.loading {
     pointer-events:none;
     opacity:0.7;
@@ -199,6 +245,7 @@ button.loading::after {
     to { transform:translateY(-50%) rotate(360deg); }
 }
 
+/* ===== TYPING ===== */
 .typing span {
     display:inline-block;
     width:6px;
@@ -226,7 +273,7 @@ button.loading::after {
     <div class="header">
         <div>
             DevOps Messaging Panel
-            <button id="logsBtn" style="margin-left:10px; padding:6px 10px; font-size:12px;">
+            <button id="logsBtn" style="margin-left:10px; padding:6px 12px; font-size:12px;">
                 Logs
             </button>
         </div>
@@ -238,7 +285,6 @@ button.loading::after {
             </div>
             <div id="latency">Latency: -- ms</div>
 
-            <!-- 🔥 METRICS -->
             <div style="font-size:11px; color:#94a3b8;">
                 <div id="hits">Hits: {{ hits }}</div>
                 <div id="clicks">Clicks: {{ clicks }}</div>
@@ -275,7 +321,7 @@ button.loading::after {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-
+/* SAME JS (UNCHANGED) */
 function scrollBottom() {
     let box = document.getElementById("messages");
     box.scrollTop = box.scrollHeight;
@@ -297,7 +343,6 @@ function addMessage(text, type, time) {
     scrollBottom();
 }
 
-/* TYPING */
 function showTyping() {
     $("#messages").append(`
         <div class="msg system" id="typing">
@@ -312,7 +357,6 @@ function removeTyping() {
     $("#typing").remove();
 }
 
-/* SEND */
 $("#sendBtn").click(sendMsg);
 
 function sendMsg() {
@@ -322,7 +366,6 @@ function sendMsg() {
 
     if (!msg) return;
 
-    // 🔥 TRACK CLICK
     fetch('/track_click', { method: 'POST' });
 
     addMessage(msg, "user", "now");
@@ -365,7 +408,6 @@ function sendMsg() {
     });
 }
 
-/* METRICS AUTO REFRESH */
 function loadMetrics() {
     fetch('/metrics')
     .then(res => res.json())
@@ -377,7 +419,6 @@ function loadMetrics() {
 
 setInterval(loadMetrics, 5000);
 
-/* LOG VIEWER */
 $("#logsBtn").click(function() {
     let panel = $("#logsPanel");
 
@@ -415,7 +456,6 @@ setInterval(() => {
 }, 5000);
 
 scrollBottom();
-
 </script>
 
 </body>
