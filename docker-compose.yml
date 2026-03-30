@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:8
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -28,8 +28,8 @@ services:
       - "5000:5000"
     environment:
       MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
       MYSQL_DB: devops
     depends_on:
       mysql:
